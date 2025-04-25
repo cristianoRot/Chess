@@ -131,7 +131,7 @@ public class GameHandler implements Runnable {
         }
     }
 
-    private static boolean CheckPawnMove(char[] start, char[] end, boolean isWhite)
+    private static boolean CheckPawnMove(int[] start, int[] end, boolean isWhite)
     {
         if (start[0] != end[0]) return false;
 
@@ -159,27 +159,28 @@ public class GameHandler implements Runnable {
         return true;
     }
 
-    private static boolean CheckRockMove(char[] start, char[] end, boolean isWhite)
+    private static boolean CheckRockMove(int[] start, int[] end, boolean isWhite)
     {
         char pieceInEndBox = board.getPiece(end);
+        boolean isMovingHorizontal = start[1] != end[1];
 
-        if (start[0] != end[0] && start[1] != end[1]) return false;
+        if (start[0] != end[0] && isMovingHorizontal) return false; // check that rock moves in a straight way
 
-        if(start[0] == end[0])
+        int offset = end[1] - start[1] + end[0] - start[0] - 1;
+
+        for (int i = 1; i < offset; i++)
         {
-            boolean moveUp = start[1] < end[1]; 
-            int offsetMove = Math.abs(start[1] - end[1]);
-
-            for(int i = 1; i < offsetMove; i++)
-            {
-                char arr = { start[0], (moveUp ? start[1] + i : start[1] - i) };
-                if (board.getPiece(arr) != "") return false;
-            }
+            
+            if (board.getPiece(arr) != "") return false;
         }
 
+
+        if (isWhite ? isPieceWhite(pieceInEndBox) : !isPieceWhite(pieceInEndBox)) return false;
+
+        return true;
     }
 
-    private static boolean CheckBishopMove(char[] start, char[] end)
+    private static boolean CheckBishopMove(int[] start, int[] end)
     {
         
     }
