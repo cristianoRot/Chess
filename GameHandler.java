@@ -131,21 +131,19 @@ public class GameHandler implements Runnable {
 
     private static boolean CheckPawnMove(int[] start, int[] end, boolean isWhite)
     {
-        if (start[0] != end[0]) return false;
+        if (end[0] < start[0] - 1 || end[0] > start[0] + 1) return false; // check the horizontal range 
 
-        if (end[0] < start[0] - 1 || end[0] > start[0] + 1) return false;
-
-        boolean isInStartingPlace = (isWhite && start[1] == 2) || (!isWhite && start[1] == 7);
+        boolean isInStartingPlace = (isWhite && start[1] == 6) || (!isWhite && start[1] == 1);
 
         char pieceInEndBox = board.getPiece(end);
 
         if (isWhite)
         {
-            if (end[1] > (isInStartingPlace ? start[1] + 2 : start[1] + 1)) return false;
+            if (end[1] > (isInStartingPlace ? start[1] - 2 : start[1] - 1)) return false;
         }
         else
         {
-            if (end[1] < (isInStartingPlace ? start[1] - 2 : start[1] - 1)) return false;
+            if (end[1] < (isInStartingPlace ? start[1] + 2 : start[1] + 1)) return false;
         }
 
         if (start[0] == end[0])
@@ -164,11 +162,19 @@ public class GameHandler implements Runnable {
 
         if (start[0] != end[0] && isMovingHorizontal) return false; // check that rock moves in a straight way
 
-        int offset = end[1] - start[1] + end[0] - start[0] - 1;
+        int offsetX = end[1] - start[1] - 1;
+        int offsetY = end[0] - start[0] - 1;
+        int step = end[0] < start[0] || end[1] < start[1] ? -1 : 1;
 
-        for (int i = 1; i < offset; i++)
+        for (int i = step; Math.abs(i) < Math.abs(offsetX); i += step)
         {
-            
+            int[] arr = { start[0] + i, start[1] };
+            if (board.getPiece(arr) != "") return false;
+        }
+
+        for (int i = step; Math.abs(i) < Math.abs(offsetY); i += step)
+        {
+            int[] arr = { start[0], start[1] + i };
             if (board.getPiece(arr) != "") return false;
         }
 
@@ -180,7 +186,7 @@ public class GameHandler implements Runnable {
 
     private static boolean CheckBishopMove(int[] start, int[] end)
     {
-        
+        return true;
     }
 
     private static boolean isPieceWhite(char piece)
