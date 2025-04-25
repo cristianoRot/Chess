@@ -4,6 +4,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.*;
 
+// ciao 
+
 public class GameHandler implements Runnable {
     private int gameId;
     private static ChessBoardViewer board;
