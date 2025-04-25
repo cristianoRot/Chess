@@ -87,30 +87,28 @@ public class GameHandler implements Runnable {
     // format: Xpp-pp
     public static boolean CheckMoveFormat(String move, boolean isWhite) {
         char first = move.charAt(0);
-        char[] start = { move.charAt(1), move.charAt(2) }; // { letter, digit }
-        char[] end = { move.charAt(4), move.charAt(5) }; // { letter, digit }
+        int[] start = { move.charAt(1) - 'a', '8' - move.charAt(2) }; // { letter, digit }
+        int[] end = { move.charAt(4) - 'a', '8' - move.charAt(5) }; // { letter, digit }
 
-        CheckMoveValid(first, start, end, isWhite);
-
-        if (start[0] < 'a' || start[0] > 'h') 
+        if (start[0] < 0 || start[0] > 7) 
             return false;
         
-        if (start[1] < '1' || start[1] > '8') 
+        if (start[1] < 0 || start[1] > 7) 
             return false;
 
         if (move.charAt(3) != '-') 
             return false;
 
-        if (end[0] < 'a' || end[0] > 'h') 
+        if (end[0] < 0 || end[0] > 7) 
             return false;
         
-        if (end[1] < '1' || end[1] > '8') 
+        if (end[1] < 0 || end[1] > 7) 
             return false;
-        
-        return true;
+
+        return CheckMoveValid(first, start, end, isWhite);
     }
 
-    private static boolean CheckMoveValid(char piece, char[] start, char[] end, boolean isWhite)
+    private static boolean CheckMoveValid(char piece, int[] start, int[] end, boolean isWhite)
     {
         switch (piece) {
             case 'P':
