@@ -75,7 +75,7 @@ public class ChessBoardViewer extends JFrame {
         }
     }
 
-    public char getPiece(char[] box)
+    public char getPiece(int[] box)
     {
         return this.pieces[box[0]][box[1]].getText().charAt(0);
     }
