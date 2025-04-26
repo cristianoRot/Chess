@@ -21,7 +21,7 @@ public class Server {
 
                 if (game == null)
                 {
-                    game = new GameHandler(incrementGameId());
+                    game = new GameHandler(incrementGameId(), new ArrayList<>(), false);
                     game.addPlayer(socket);
                     waitingGames.add(game);
 

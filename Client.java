@@ -14,12 +14,13 @@ public class Client {
     private static Scanner socketIn;
     private static OutputStream socketOut;
 
+    private static GameHandler gameHandler;
     private static ArrayList<String> moves = new ArrayList<>();
-    private static ChessBoardViewer board;
+
+    private static int gameId;
+    private static int team; // 0 -> white, 1 -> black
 
     public static void main(String[] args) {
-        board = new ChessBoardViewer(moves);
-        
         System.out.println("Get address: ");
         address = scanner.nextLine();
 
@@ -34,16 +35,43 @@ public class Client {
                 while (true) {
                     String response = socketIn.nextLine();
 
-                    if (response.equals("PASS")) break; // your turn;
-
-                    ReceiveMove(response);
+                    HandleMessage(response);
                 }
-
-                SendMove();
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    public static void HandleMessage(String mess) throws Exception
+    {
+        String[] arr = mess.split(",");
+
+        switch (arr[0].charAt(0)) {
+            case '0':
+                InitializeMatch(Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+                break;
+            case '1':
+                System.out.println("Match started!");
+                break;
+            case 'M':
+                SendMove();
+                break;
+            default:
+                ReceiveMove(mess);
+                break;
+        }
+    }
+
+    private static void InitializeMatch(int gameId_, int team_)
+    {
+        gameId = gameId_;
+        team = team_;
+
+        gameHandler = new GameHandler(gameId_, moves, true);
+
+        System.out.println("Game ID: " + gameId);
+        System.out.println("Your team: " + (team == 0 ? "White" : "Black"));
     }
 
     public static void SendMove() throws Exception
@@ -54,15 +82,14 @@ public class Client {
         {
             String move = scanner.nextLine() + "\n";
             
-            while (!GameHandler.CheckMoveFormat(move))
+            while (!gameHandler.CheckMoveFormat(move, team == 0 ? true : false))
             {
                 System.out.println("Incorrect move format! Please try again:");
                 move = scanner.nextLine() + '\n';
             }
 
             moves.add(move.trim());
-            board.updateBoard();
-            System.out.println(board.toString());
+            gameHandler.UpdateBoard();
 
             socketOut.write(move.getBytes());
             System.out.println("Wait opponent move...");
@@ -78,16 +105,11 @@ public class Client {
 
     public static void ReceiveMove(String move) throws Exception
     {
-        if (GameHandler.CheckMoveFormat(move)) 
+        if (gameHandler.CheckMoveFormat(move, team == 0 ? false : true)) 
         {
             moves.add(move);
-            board.updateBoard();
-            System.out.println(board.toString());
+            gameHandler.UpdateBoard();
             System.out.println(moves.size());
-        }
-        else
-        {
-            System.out.println(move);
         }
     }
     
