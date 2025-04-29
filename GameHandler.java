@@ -255,6 +255,19 @@ public class GameHandler implements Runnable {
 
     private boolean CheckBishopMove(int[] start, int[] end, boolean isWhite)
     {
+        int offsetX = start[0] - end[0];
+        int offsetY = start[1] - end[1];
+        if(math.abs(offsetX) != math.abs(offsetY)) return false; // chack that bishop moves in diagonal 
+        
+        int offset = math.abs(offsetY);
+        boolean isMovingUp = isWhite ? offsetY > 0 : offsetY < 0;
+        boolean isMovingDown = isWhite ? offsetY < 0 : offsetY > 0;
+
+        
+
+
+
+
         return true;
     }
 
